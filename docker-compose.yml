@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - '5000:5000'
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/devscope
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+      - CORS_ORIGIN=http://localhost:5173
+      - GITHUB_TOKEN=${GITHUB_TOKEN}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+    depends_on:
+      - mongodb
+    networks:
+      - devscope-network
+    restart: unless-stopped
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - '5173:80'
+    depends_on:
+      - server
+    networks:
+      - devscope-network
+    restart: unless-stopped
+
+  mongodb:
+    image: mongo:7.0
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - devscope-network
+    restart: unless-stopped
+
+networks:
+  devscope-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
