@@ -23,7 +23,7 @@ export const searchDevelopers = asyncHandler(async (req: AuthRequest, res: Respo
 
 export const getDeveloperProfile = asyncHandler(async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
-  const profile = await recruiterService.getDeveloperProfile(id);
+  const profile = await recruiterService.getDeveloperProfile(id as string);
 
   if (!profile) {
     res.status(404).json({ success: false, message: 'Developer profile not found' });

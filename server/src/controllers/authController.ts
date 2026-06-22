@@ -107,7 +107,7 @@ export const resetPassword = asyncHandler(async (req: AuthRequest, res: Response
   const { token } = req.params;
   const { password } = req.body;
 
-  await authService.resetPassword(token, password);
+  await authService.resetPassword(token as string, password);
 
   res.json({
     success: true,
